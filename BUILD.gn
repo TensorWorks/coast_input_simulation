@@ -1,0 +1,30 @@
+executable("coast_input_simulation_test") {
+    deps = [
+        ":coast_input_simulation"
+    ]
+
+    sources = [
+        "input_sim_test.cc"
+    ]
+}
+
+static_library("coast_input_simulation") {
+    sources = [
+        "input_sim.h",
+    ]
+
+    if(is_win) {
+        sources += [
+            "win/input_sim_win.cc",
+        ]
+    } else if(is_linux) {
+        sources += [
+            "linux/input_sim_linux.cc",
+        ]
+
+        libs = [
+            "X11",
+            "Xtst",
+        ]
+    }
+}

@@ -1,0 +1,9 @@
+### Coast Input Simulation
+
+## Dependencies
+Linux
+- X11
+- Xtst
+
+## Build
+- Import into a `gn` based project and add as a dependency to one of your project's `BUILD.gn` files
