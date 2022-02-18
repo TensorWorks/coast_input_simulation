@@ -1,15 +1,9 @@
 #include "input_sim.h"
 
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/XInput.h>
-#include <X11/extensions/XTest.h>
-#include <X11/keysym.h>
-
 #include <iostream>
 namespace Coast
 {
-    KeyCode ConvertToNative(KeyCodes key)
+    unsigned char ConvertToNative(KeyCodes key)
     {
         switch(key) {
         case KeyCodes::KEY_A:
@@ -231,7 +225,7 @@ namespace Coast
         }
     }
 
-    KeyCodes ConvertToKeyCode(KeyCode key)
+    KeyCodes ConvertToKeyCode(unsigned char key)
     {
         switch(key) {
         case 9:
@@ -459,57 +453,41 @@ namespace Coast
 
     void SendInput(const KeyEvent& e)
     {
-        auto* display = XOpenDisplay(NULL);
         auto mappedkey = ConvertToNative(e.Key);
         if(mappedkey == 255)
             return; // key doesnt exist 
-        XTestFakeKeyEvent(display, mappedkey, e.Pressed ? True : False, CurrentTime);
-        XCloseDisplay(display);
     }
+
     void SendInput(const MouseButtonEvent& e)
     {
-        auto* display = XOpenDisplay(NULL);
         switch(e.Button) {
         case MouseButtons::LEFT:
-            XTestFakeButtonEvent(display, Button1, e.Pressed ? True : False, CurrentTime);
             break;
         case MouseButtons::MIDDLE:
-            XTestFakeButtonEvent(display, Button2, e.Pressed ? True : False, CurrentTime);
             break;
         case MouseButtons::RIGHT:
-            XTestFakeButtonEvent(display, Button3, e.Pressed ? True : False, CurrentTime);
             break;
         default:
             break;
         }
-        XCloseDisplay(display);
     }
+
     void SendInput(const MouseScrollEvent& e)
     {
-        auto* display = XOpenDisplay(NULL);
         if(e.Offset < 0) {
             for(auto i = 0; i < abs(e.Offset) && i < 5; i++) { /// cap at 5
-                XTestFakeButtonEvent(display, Button5, True, CurrentTime);
-                XTestFakeButtonEvent(display, Button5, False, CurrentTime);
             }
         } else if(e.Offset > 0) {
             for(auto i = 0; i < e.Offset && i < 5; i++) { /// cap at 5
-                XTestFakeButtonEvent(display, Button4, True, CurrentTime);
-                XTestFakeButtonEvent(display, Button4, False, CurrentTime);
             }
         }
-        XCloseDisplay(display);
     }
+
     void SendInput(const MousePositionOffsetEvent& e)
     {
-        auto* display = XOpenDisplay(NULL);
-        XTestFakeRelativeMotionEvent(display, -1, e.X, e.Y);
-        XCloseDisplay(display);
     }
+
     void SendInput(const MousePositionAbsoluteEvent& e)
     {
-        auto* display = XOpenDisplay(NULL);
-        XTestFakeMotionEvent(display, -1, e.X, e.Y, CurrentTime);
-        XCloseDisplay(display);
     }
 }
