@@ -7,130 +7,130 @@ namespace Coast {
     DWORD ConvertToNative(KeyCodes key)
     {
         switch (key) {
-        case KeyCodes::KEY_A:
-        case KeyCodes::KEY_B:
-        case KeyCodes::KEY_C:
-        case KeyCodes::KEY_D:
-        case KeyCodes::KEY_E:
-        case KeyCodes::KEY_F:
-        case KeyCodes::KEY_G:
-        case KeyCodes::KEY_H:
-        case KeyCodes::KEY_I:
-        case KeyCodes::KEY_J:
-        case KeyCodes::KEY_K:
-        case KeyCodes::KEY_L:
-        case KeyCodes::KEY_M:
-        case KeyCodes::KEY_N:
-        case KeyCodes::KEY_O:
-        case KeyCodes::KEY_P:
-        case KeyCodes::KEY_Q:
-        case KeyCodes::KEY_R:
-        case KeyCodes::KEY_S:
-        case KeyCodes::KEY_T:
-        case KeyCodes::KEY_U:
-        case KeyCodes::KEY_V:
-        case KeyCodes::KEY_W:
-        case KeyCodes::KEY_X:
-        case KeyCodes::KEY_Y:
-        case KeyCodes::KEY_Z:
-            return static_cast<int>('A') + (key - KeyCodes::KEY_A);
-        case KeyCodes::KEY_1:
-        case KeyCodes::KEY_2:
-        case KeyCodes::KEY_3:
-        case KeyCodes::KEY_4:
-        case KeyCodes::KEY_5:
-        case KeyCodes::KEY_6:
-        case KeyCodes::KEY_7:
-        case KeyCodes::KEY_8:
-        case KeyCodes::KEY_9:
-            return static_cast<int>('1') + (key - KeyCodes::KEY_1);
-        case KeyCodes::KEY_0:
+        case KeyCodes::COAST_A:
+        case KeyCodes::COAST_B:
+        case KeyCodes::COAST_C:
+        case KeyCodes::COAST_D:
+        case KeyCodes::COAST_E:
+        case KeyCodes::COAST_F:
+        case KeyCodes::COAST_G:
+        case KeyCodes::COAST_H:
+        case KeyCodes::COAST_I:
+        case KeyCodes::COAST_J:
+        case KeyCodes::COAST_K:
+        case KeyCodes::COAST_L:
+        case KeyCodes::COAST_M:
+        case KeyCodes::COAST_N:
+        case KeyCodes::COAST_O:
+        case KeyCodes::COAST_P:
+        case KeyCodes::COAST_Q:
+        case KeyCodes::COAST_R:
+        case KeyCodes::COAST_S:
+        case KeyCodes::COAST_T:
+        case KeyCodes::COAST_U:
+        case KeyCodes::COAST_V:
+        case KeyCodes::COAST_W:
+        case KeyCodes::COAST_X:
+        case KeyCodes::COAST_Y:
+        case KeyCodes::COAST_Z:
+            return static_cast<int>('A') + (key - KeyCodes::COAST_A);
+        case KeyCodes::COAST_1:
+        case KeyCodes::COAST_2:
+        case KeyCodes::COAST_3:
+        case KeyCodes::COAST_4:
+        case KeyCodes::COAST_5:
+        case KeyCodes::COAST_6:
+        case KeyCodes::COAST_7:
+        case KeyCodes::COAST_8:
+        case KeyCodes::COAST_9:
+            return static_cast<int>('1') + (key - KeyCodes::COAST_1);
+        case KeyCodes::COAST_0:
             return static_cast<int>('0');
-        case KeyCodes::KEY_Enter:
+        case KeyCodes::COAST_Enter:
             return VK_RETURN;
-        case KeyCodes::KEY_Escape:
+        case KeyCodes::COAST_Escape:
             return VK_ESCAPE;
-        case KeyCodes::KEY_Backspace:
+        case KeyCodes::COAST_Backspace:
             return VK_BACK;
-        case KeyCodes::KEY_Tab:
+        case KeyCodes::COAST_Tab:
             return VK_TAB;
-        case KeyCodes::KEY_Space:
+        case KeyCodes::COAST_Space:
             return VK_SPACE;
-        case KeyCodes::KEY_Minus:
+        case KeyCodes::COAST_Minus:
             return VK_OEM_MINUS;
-        case KeyCodes::KEY_Equals:
+        case KeyCodes::COAST_Equals:
             return VK_OEM_PLUS; // this is correct and not a mistype
-        case KeyCodes::KEY_LeftBracket:
+        case KeyCodes::COAST_LeftBracket:
             return VK_OEM_4;
-        case KeyCodes::KEY_RightBracket:
+        case KeyCodes::COAST_RightBracket:
             return VK_OEM_6;
-        case KeyCodes::KEY_Backslash:
+        case KeyCodes::COAST_Backslash:
             return VK_OEM_5;
-        case KeyCodes::KEY_Semicolon:
+        case KeyCodes::COAST_Semicolon:
             return VK_OEM_1;
-        case KeyCodes::KEY_Quote:
+        case KeyCodes::COAST_Quote:
             return VK_OEM_7;
-        case KeyCodes::KEY_Grave:
+        case KeyCodes::COAST_Grave:
             return VK_OEM_3;
-        case KeyCodes::KEY_Comma:
+        case KeyCodes::COAST_Comma:
             return VK_OEM_COMMA;
-        case KeyCodes::KEY_Period:
+        case KeyCodes::COAST_Period:
             return VK_OEM_PERIOD;
-        case KeyCodes::KEY_Slash:
+        case KeyCodes::COAST_Slash:
             return VK_OEM_2;
-        case KeyCodes::KEY_CapsLock:
+        case KeyCodes::COAST_CapsLock:
             return VK_CAPITAL;
-        case KeyCodes::KEY_F1:
-        case KeyCodes::KEY_F2:
-        case KeyCodes::KEY_F3:
-        case KeyCodes::KEY_F4:
-        case KeyCodes::KEY_F5:
-        case KeyCodes::KEY_F6:
-        case KeyCodes::KEY_F7:
-        case KeyCodes::KEY_F8:
-        case KeyCodes::KEY_F9:
-        case KeyCodes::KEY_F10:
-        case KeyCodes::KEY_F11:
-        case KeyCodes::KEY_F12:
-            return VK_F1 + (key - KeyCodes::KEY_F1);
-        case KeyCodes::KEY_F13:
-        case KeyCodes::KEY_F14:
-        case KeyCodes::KEY_F15:
-        case KeyCodes::KEY_F16:
-        case KeyCodes::KEY_F17:
-        case KeyCodes::KEY_F18:
-        case KeyCodes::KEY_F19:
-        case KeyCodes::KEY_F20:
-        case KeyCodes::KEY_F21:
-        case KeyCodes::KEY_F22:
-        case KeyCodes::KEY_F23:
-        case KeyCodes::KEY_F24:
-            return VK_F13 + (key - KeyCodes::KEY_F13);
-        case KeyCodes::KEY_PrintScreen:
+        case KeyCodes::COAST_F1:
+        case KeyCodes::COAST_F2:
+        case KeyCodes::COAST_F3:
+        case KeyCodes::COAST_F4:
+        case KeyCodes::COAST_F5:
+        case KeyCodes::COAST_F6:
+        case KeyCodes::COAST_F7:
+        case KeyCodes::COAST_F8:
+        case KeyCodes::COAST_F9:
+        case KeyCodes::COAST_F10:
+        case KeyCodes::COAST_F11:
+        case KeyCodes::COAST_F12:
+            return VK_F1 + (key - KeyCodes::COAST_F1);
+        case KeyCodes::COAST_F13:
+        case KeyCodes::COAST_F14:
+        case KeyCodes::COAST_F15:
+        case KeyCodes::COAST_F16:
+        case KeyCodes::COAST_F17:
+        case KeyCodes::COAST_F18:
+        case KeyCodes::COAST_F19:
+        case KeyCodes::COAST_F20:
+        case KeyCodes::COAST_F21:
+        case KeyCodes::COAST_F22:
+        case KeyCodes::COAST_F23:
+        case KeyCodes::COAST_F24:
+            return VK_F13 + (key - KeyCodes::COAST_F13);
+        case KeyCodes::COAST_PrintScreen:
             return VK_SNAPSHOT;
-        case KeyCodes::KEY_ScrollLock:
+        case KeyCodes::COAST_ScrollLock:
             return VK_SCROLL;
-        case KeyCodes::KEY_Pause:
+        case KeyCodes::COAST_Pause:
             return VK_PAUSE;
-        case KeyCodes::KEY_Insert:
+        case KeyCodes::COAST_Insert:
             return VK_INSERT;
-        case KeyCodes::KEY_Home:
+        case KeyCodes::COAST_Home:
             return VK_HOME;
-        case KeyCodes::KEY_PageUp:
+        case KeyCodes::COAST_PageUp:
             return VK_PRIOR;
-        case KeyCodes::KEY_Delete:
+        case KeyCodes::COAST_Delete:
             return VK_DELETE;
-        case KeyCodes::KEY_End:
+        case KeyCodes::COAST_End:
             return VK_END;
-        case KeyCodes::KEY_PageDown:
+        case KeyCodes::COAST_PageDown:
             return VK_NEXT;
-        case KeyCodes::KEY_Right:
+        case KeyCodes::COAST_Right:
             return VK_RIGHT;
-        case KeyCodes::KEY_Left:
+        case KeyCodes::COAST_Left:
             return VK_LEFT;
-        case KeyCodes::KEY_Down:
+        case KeyCodes::COAST_Down:
             return VK_DOWN;
-        case KeyCodes::KEY_Up:
+        case KeyCodes::COAST_Up:
             return VK_UP;
         case KeyCodes::KP_NumLock:
             return VK_NUMLOCK;
@@ -158,25 +158,25 @@ namespace Coast {
             return VK_NUMPAD0;
         case KeyCodes::KP_Point:
             return VK_DECIMAL;
-        case KeyCodes::KEY_Help:
+        case KeyCodes::COAST_Help:
             return VK_HELP;
-        case KeyCodes::KEY_Menu:
+        case KeyCodes::COAST_Menu:
             return VK_MENU;
-        case KeyCodes::KEY_LeftControl:
+        case KeyCodes::COAST_LeftControl:
             return VK_CONTROL;
-        case KeyCodes::KEY_LeftShift:
+        case KeyCodes::COAST_LeftShift:
             return VK_SHIFT;
-        case KeyCodes::KEY_LeftAlt:
+        case KeyCodes::COAST_LeftAlt:
             return VK_MENU;
-        case KeyCodes::KEY_LeftMeta:
+        case KeyCodes::COAST_LeftMeta:
             return VK_LWIN;
-        case KeyCodes::KEY_RightControl:
+        case KeyCodes::COAST_RightControl:
             return VK_CONTROL;
-        case KeyCodes::KEY_RightShift:
+        case KeyCodes::COAST_RightShift:
             return VK_SHIFT;
-        case KeyCodes::KEY_RightAlt:
+        case KeyCodes::COAST_RightAlt:
             return VK_MENU;
-        case KeyCodes::KEY_RightMeta:
+        case KeyCodes::COAST_RightMeta:
             return VK_RWIN;
         default:
             return 255;
@@ -187,7 +187,7 @@ namespace Coast {
 
         switch (key) {
         case '0':
-            return KeyCodes::KEY_0;
+            return KeyCodes::COAST_0;
         case '1':
         case '2':
         case '3':
@@ -197,7 +197,7 @@ namespace Coast {
         case '7':
         case '8':
         case '9':
-            return static_cast<KeyCodes>(KeyCodes::KEY_1 + (key - static_cast<int>('1')));
+            return static_cast<KeyCodes>(KeyCodes::COAST_1 + (key - static_cast<int>('1')));
         case 'A':
         case 'B':
         case 'C':
@@ -224,41 +224,41 @@ namespace Coast {
         case 'X':
         case 'Y':
         case 'Z':
-            return static_cast<KeyCodes>(KeyCodes::KEY_A + (key - static_cast<int>('A')));
+            return static_cast<KeyCodes>(KeyCodes::COAST_A + (key - static_cast<int>('A')));
         case VK_RETURN:
-            return KeyCodes::KEY_Enter;
+            return KeyCodes::COAST_Enter;
         case VK_ESCAPE:
-            return KeyCodes::KEY_Escape;
+            return KeyCodes::COAST_Escape;
         case VK_BACK:
-            return KeyCodes::KEY_Backspace;
+            return KeyCodes::COAST_Backspace;
         case VK_TAB:
-            return KeyCodes::KEY_Tab;
+            return KeyCodes::COAST_Tab;
         case VK_SPACE:
-            return KeyCodes::KEY_Space;
+            return KeyCodes::COAST_Space;
         case VK_OEM_MINUS:
-            return KeyCodes::KEY_Minus;
+            return KeyCodes::COAST_Minus;
         case VK_OEM_PLUS:
-            return KeyCodes::KEY_Equals; // this is correct and not a mistype
+            return KeyCodes::COAST_Equals; // this is correct and not a mistype
         case VK_OEM_4:
-            return KeyCodes::KEY_LeftBracket;
+            return KeyCodes::COAST_LeftBracket;
         case VK_OEM_6:
-            return KeyCodes::KEY_RightBracket;
+            return KeyCodes::COAST_RightBracket;
         case VK_OEM_5:
-            return KeyCodes::KEY_Backslash;
+            return KeyCodes::COAST_Backslash;
         case VK_OEM_1:
-            return KeyCodes::KEY_Semicolon;
+            return KeyCodes::COAST_Semicolon;
         case VK_OEM_7:
-            return KeyCodes::KEY_Quote;
+            return KeyCodes::COAST_Quote;
         case VK_OEM_3:
-            return KeyCodes::KEY_Grave;
+            return KeyCodes::COAST_Grave;
         case VK_OEM_COMMA:
-            return KeyCodes::KEY_Comma;
+            return KeyCodes::COAST_Comma;
         case VK_OEM_PERIOD:
-            return KeyCodes::KEY_Period;
+            return KeyCodes::COAST_Period;
         case VK_OEM_2:
-            return KeyCodes::KEY_Slash;
+            return KeyCodes::COAST_Slash;
         case VK_CAPITAL:
-            return KeyCodes::KEY_CapsLock;
+            return KeyCodes::COAST_CapsLock;
         case VK_F1:
         case VK_F2:
         case VK_F3:
@@ -271,7 +271,7 @@ namespace Coast {
         case VK_F10:
         case VK_F11:
         case VK_F12:
-            return static_cast<KeyCodes>(KeyCodes::KEY_F1 + (key - VK_F1));
+            return static_cast<KeyCodes>(KeyCodes::COAST_F1 + (key - VK_F1));
         case VK_F13:
         case VK_F14:
         case VK_F15:
@@ -284,33 +284,33 @@ namespace Coast {
         case VK_F22:
         case VK_F23:
         case VK_F24:
-            return static_cast<KeyCodes>(KeyCodes::KEY_F13 + (key - VK_F13));
+            return static_cast<KeyCodes>(KeyCodes::COAST_F13 + (key - VK_F13));
         case VK_SNAPSHOT:
-            return KeyCodes::KEY_PrintScreen;
+            return KeyCodes::COAST_PrintScreen;
         case VK_SCROLL:
-            return KeyCodes::KEY_ScrollLock;
+            return KeyCodes::COAST_ScrollLock;
         case VK_PAUSE:
-            return KeyCodes::KEY_Pause;
+            return KeyCodes::COAST_Pause;
         case VK_INSERT:
-            return KeyCodes::KEY_Insert;
+            return KeyCodes::COAST_Insert;
         case VK_HOME:
-            return KeyCodes::KEY_Home;
+            return KeyCodes::COAST_Home;
         case VK_PRIOR:
-            return KeyCodes::KEY_PageUp;
+            return KeyCodes::COAST_PageUp;
         case VK_DELETE:
-            return KeyCodes::KEY_Delete;
+            return KeyCodes::COAST_Delete;
         case VK_END:
-            return KeyCodes::KEY_End;
+            return KeyCodes::COAST_End;
         case VK_NEXT:
-            return KeyCodes::KEY_PageDown;
+            return KeyCodes::COAST_PageDown;
         case VK_RIGHT:
-            return KeyCodes::KEY_Right;
+            return KeyCodes::COAST_Right;
         case VK_LEFT:
-            return KeyCodes::KEY_Left;
+            return KeyCodes::COAST_Left;
         case VK_DOWN:
-            return KeyCodes::KEY_Down;
+            return KeyCodes::COAST_Down;
         case VK_UP:
-            return KeyCodes::KEY_Up;
+            return KeyCodes::COAST_Up;
         case VK_NUMLOCK:
             return KeyCodes::KP_NumLock;
         case VK_DIVIDE:
@@ -336,23 +336,23 @@ namespace Coast {
         case VK_DECIMAL:
             return KeyCodes::KP_Point;
         case VK_HELP:
-            return KeyCodes::KEY_Help;
+            return KeyCodes::COAST_Help;
         case VK_MENU:
         case VK_LMENU:
         case VK_RMENU:
-            return KeyCodes::KEY_Menu;
+            return KeyCodes::COAST_Menu;
         case VK_CONTROL:
         case VK_LCONTROL:
         case VK_RCONTROL:
-            return KeyCodes::KEY_LeftControl;
+            return KeyCodes::COAST_LeftControl;
         case VK_SHIFT:
         case VK_LSHIFT:
         case VK_RSHIFT:
-            return KeyCodes::KEY_LeftShift;
+            return KeyCodes::COAST_LeftShift;
         case VK_LWIN:
-            return KeyCodes::KEY_LeftMeta;
+            return KeyCodes::COAST_LeftMeta;
         case VK_RWIN:
-            return KeyCodes::KEY_RightMeta;
+            return KeyCodes::COAST_RightMeta;
         default:
             return KeyCodes::INVALID;
         }
