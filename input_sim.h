@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Coast {
-    enum KeyCodes : unsigned char {
+    enum KeyCodes : unsigned int {
         COAST_A = 4,
         COAST_B = 5,
         COAST_C = 6,
@@ -49,7 +49,7 @@ namespace Coast {
         COAST_RightBracket = 48,
         COAST_Backslash = 49,
         COAST_Semicolon = 51,
-        COAST_Quote = 52,
+        COAST_APOSTROPHE = 52,
         COAST_Grave = 53,
         COAST_Comma = 54,
         COAST_Period = 55,
@@ -80,25 +80,24 @@ namespace Coast {
         COAST_Left = 80,
         COAST_Down = 81,
         COAST_Up = 82,
-        KP_NumLock = 83,
-        KP_Divide = 84,
-        KP_Multiply = 85,
-        KP_Subtract = 86,
-        KP_Add = 87,
-        KP_Enter = 88,
-        KP_1 = 89,
-        KP_2 = 90,
-        KP_3 = 91,
-        KP_4 = 92,
-        KP_5 = 93,
-        KP_6 = 94,
-        KP_7 = 95,
-        KP_8 = 96,
-        KP_9 = 97,
-        KP_0 = 98,
-        KP_Point = 99,
-        COAST_NonUSBackslash = 100,
-        KP_Equals = 103,
+        COAST_KP_NumLock = 83,
+        COAST_KP_Divide = 84,
+        COAST_KP_Asterisk = 85,
+        COAST_KP_Subtract = 86,
+        COAST_KP_Add = 87,
+        COAST_KP_Enter = 88,
+        COAST_KP_1 = 89,
+        COAST_KP_2 = 90,
+        COAST_KP_3 = 91,
+        COAST_KP_4 = 92,
+        COAST_KP_5 = 93,
+        COAST_KP_6 = 94,
+        COAST_KP_7 = 95,
+        COAST_KP_8 = 96,
+        COAST_KP_9 = 97,
+        COAST_KP_0 = 98,
+        COAST_KP_Period = 99,
+        COAST_KP_Equals = 103,
         COAST_F13 = 104,
         COAST_F14 = 105,
         COAST_F15 = 106,
@@ -151,6 +150,8 @@ namespace Coast {
         int Y = 0;
     };
 
+    bool InitialiseInputSimulation();
+    void ReleaseInputSimulation();
     void SendInput(const KeyEvent &e);
     void SendInput(const MouseButtonEvent &e);
     void SendInput(const MouseScrollEvent &e);

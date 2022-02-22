@@ -1,453 +1,591 @@
 #include "input_sim.h"
 
 #include <iostream>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <linux/uinput.h>
 
 namespace Coast
 {
+    static int InputFd = 0;
+
+    bool InitialiseInputSimulation()
+    {
+        struct uinput_setup usetup;
+    
+        int fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+        if (fd < 0) {
+            fprintf(stderr, "failed to open device %s\n", strerror(errno));
+            return false;
+        }
+
+        /* enable events */
+        ioctl(fd, UI_SET_EVBIT, EV_SYN);
+        ioctl(fd, UI_SET_EVBIT, EV_KEY);
+        //ioctl(fd, UI_SET_EVBIT, EV_ABS);
+        ioctl(fd, UI_SET_EVBIT, EV_REL);
+
+        for(int i = 0; i <= KEY_MAX; i++) {
+            ioctl(fd, UI_SET_KEYBIT, i);
+        }
+    
+        ioctl(fd, UI_SET_RELBIT, REL_X);
+        ioctl(fd, UI_SET_RELBIT, REL_Y);
+        ioctl(fd, UI_SET_RELBIT, REL_HWHEEL);
+
+        // ABS mouse movement setup (seems to be incompatible with other input)
+        // ioctl(fd, UI_SET_ABSBIT, ABS_X);
+        // ioctl(fd, UI_SET_ABSBIT, ABS_Y);
+
+        // // X Axis
+        // uinput_abs_setup uinput_abs_setup_x {
+        //     { ABS_X }, // code
+        //     {
+        //             { 0 }, // value
+        //             { 0 }, // minimum
+        //             { 6000 }, // maximum
+        //             { 0 }, // fuzz
+        //             { 0 }, // flat
+        //             { 40 }, // resolution
+        //     } // absinfo
+        // };
+
+        // ioctl(fd, UI_ABS_SETUP, &uinput_abs_setup_x);
+
+        // // Y Axis
+        // uinput_abs_setup uinput_abs_setup_y = {
+        //     { ABS_Y }, // code
+        //     {
+        //             { 0 }, // value
+        //             { 0 }, // minimum
+        //             { 6000 }, // maximum
+        //             { 0 }, // fuzz
+        //             { 0 }, // flat
+        //             { 40 }, // resolution
+        //     } // absinfo
+        // };
+
+        // ioctl(fd, UI_ABS_SETUP, &uinput_abs_setup_y);
+
+        
+        memset(&usetup, 0, sizeof(usetup));
+        usetup.id.bustype = BUS_USB;
+        usetup.id.vendor = 0x1234; /* sample vendor */
+        usetup.id.product = 0x5678; /* sample product */
+        strcpy(usetup.name, "Coast input simulation device");
+    
+        ioctl(fd, UI_DEV_SETUP, &usetup);
+        ioctl(fd, UI_DEV_CREATE);
+
+        InputFd = fd;
+
+        sleep(1);
+        return true;
+    }
+
+    void ReleaseInputSimulation() {
+        if(InputFd > 0) {
+            ioctl(InputFd, UI_DEV_DESTROY);
+            close(InputFd);
+            InputFd = 0;
+        }
+    }
+
+    void EmitInput(int fd, int type, int code, int val) {
+        struct input_event ie;
+
+        ie.type = type;
+        ie.code = code;
+        ie.value = val;
+        /* timestamp values below are ignored */
+        ie.time.tv_sec = 0;
+        ie.time.tv_usec = 0;
+
+        write(fd, &ie, sizeof(ie));
+    }
+
     unsigned char ConvertToNative(KeyCodes key)
     {
         switch(key) {
         case KeyCodes::COAST_A:
-            return 38;
+            return KEY_A;
         case KeyCodes::COAST_B:
-            return 56;
+            return KEY_B;
         case KeyCodes::COAST_C:
-            return 54;
+            return KEY_C;
         case KeyCodes::COAST_D:
-            return 40;
+            return KEY_D;
         case KeyCodes::COAST_E:
-            return 26;
+            return KEY_E;
         case KeyCodes::COAST_F:
-            return 41;
+            return KEY_F;
         case KeyCodes::COAST_G:
-            return 42;
+            return KEY_G;
         case KeyCodes::COAST_H:
-            return 43;
+            return KEY_H;
         case KeyCodes::COAST_I:
-            return 31;
+            return KEY_I;
         case KeyCodes::COAST_J:
-            return 44;
+            return KEY_J;
         case KeyCodes::COAST_K:
-            return 45;
+            return KEY_K;
         case KeyCodes::COAST_L:
-            return 46;
+            return KEY_L;
         case KeyCodes::COAST_M:
-            return 58;
+            return KEY_M;
         case KeyCodes::COAST_N:
-            return 57;
+            return KEY_N;
         case KeyCodes::COAST_O:
-            return 32;
+            return KEY_O;
         case KeyCodes::COAST_P:
-            return 33;
+            return KEY_P;
         case KeyCodes::COAST_Q:
-            return 24;
+            return KEY_Q;
         case KeyCodes::COAST_R:
-            return 27;
+            return KEY_R;
         case KeyCodes::COAST_S:
-            return 39;
+            return KEY_S;
         case KeyCodes::COAST_T:
-            return 28;
+            return KEY_T;
         case KeyCodes::COAST_U:
-            return 30;
+            return KEY_U;
         case KeyCodes::COAST_V:
-            return 55;
+            return KEY_V;
         case KeyCodes::COAST_W:
-            return 25;
+            return KEY_W;
         case KeyCodes::COAST_X:
-            return 53;
+            return KEY_X;
         case KeyCodes::COAST_Y:
-            return 29;
+            return KEY_Y;
         case KeyCodes::COAST_Z:
-            return 52;
+            return KEY_Z;
         case KeyCodes::COAST_1:
-            return 10;
+            return KEY_1;
         case KeyCodes::COAST_2:
-            return 11;
+            return KEY_2;
         case KeyCodes::COAST_3:
-            return 12;
+            return KEY_3;
         case KeyCodes::COAST_4:
-            return 13;
+            return KEY_4;
         case KeyCodes::COAST_5:
-            return 14;
+            return KEY_5;
         case KeyCodes::COAST_6:
-            return 15;
+            return KEY_6;
         case KeyCodes::COAST_7:
-            return 16;
+            return KEY_7;
         case KeyCodes::COAST_8:
-            return 17;
+            return KEY_8;
         case KeyCodes::COAST_9:
-            return 18;
+            return KEY_9;
         case KeyCodes::COAST_0:
-            return 19;
+            return KEY_0;
         case KeyCodes::COAST_Enter:
-            return 36;
+            return KEY_ENTER;
         case KeyCodes::COAST_Escape:
-            return 9;
+            return KEY_ESC;
         case KeyCodes::COAST_Backspace:
-            return 22;
+            return KEY_BACKSPACE;
         case KeyCodes::COAST_Tab:
-            return 23;
+            return KEY_TAB;
         case KeyCodes::COAST_Space:
-            return 65;
+            return KEY_SPACE;
         case KeyCodes::COAST_Minus:
-            return 20;
+            return KEY_MINUS;
         case KeyCodes::COAST_Equals:
-            return 21;
+            return KEY_EQUAL;
         case KeyCodes::COAST_LeftBracket:
-            return 34;
+            return KEY_LEFTBRACE;
         case KeyCodes::COAST_RightBracket:
-            return 35;
+            return KEY_RIGHTBRACE;
         case KeyCodes::COAST_Backslash:
-            return 51;
+            return KEY_BACKSLASH;
         case KeyCodes::COAST_Semicolon:
-            return 47;
-        case KeyCodes::COAST_Quote:
-            return 48;
+            return KEY_SEMICOLON;
+        case KeyCodes::COAST_APOSTROPHE:
+            return KEY_APOSTROPHE;
         case KeyCodes::COAST_Grave:
-            return 49;
+            return KEY_GRAVE;
         case KeyCodes::COAST_Comma:
-            return 59;
+            return KEY_COMMA;
         case KeyCodes::COAST_Period:
-            return 60;
+            return KEY_DOT;
         case KeyCodes::COAST_Slash:
-            return 61;
+            return KEY_SLASH;
         case KeyCodes::COAST_CapsLock:
-            return 66;
+            return KEY_CAPSLOCK;
         case KeyCodes::COAST_F1:
+            return KEY_F1;
         case KeyCodes::COAST_F2:
+            return KEY_F2;
         case KeyCodes::COAST_F3:
+            return KEY_F3;
         case KeyCodes::COAST_F4:
+            return KEY_F4;
         case KeyCodes::COAST_F5:
+            return KEY_F5;
         case KeyCodes::COAST_F6:
+            return KEY_F6;
         case KeyCodes::COAST_F7:
+            return KEY_F7;
         case KeyCodes::COAST_F8:
+            return KEY_F8;
         case KeyCodes::COAST_F9:
+            return KEY_F9;
         case KeyCodes::COAST_F10:
-            return 67 + (key - KeyCodes::COAST_F1);
+            return KEY_F10;
         case KeyCodes::COAST_F11:
-            return 95;
+            return KEY_F11;
         case KeyCodes::COAST_F12:
-            return 96;
+            return KEY_F12;
         case KeyCodes::COAST_F13:
+            return KEY_F13;
         case KeyCodes::COAST_F14:
+            return KEY_F14;
         case KeyCodes::COAST_F15:
+            return KEY_F15;
         case KeyCodes::COAST_F16:
+            return KEY_F16;
         case KeyCodes::COAST_F17:
+            return KEY_F17;
         case KeyCodes::COAST_F18:
+            return KEY_F18;
         case KeyCodes::COAST_F19:
+            return KEY_F19;
         case KeyCodes::COAST_F20:
+            return KEY_F20;
         case KeyCodes::COAST_F21:
+            return KEY_F21;
         case KeyCodes::COAST_F22:
+            return KEY_F22;
         case KeyCodes::COAST_F23:
+            return KEY_F23;
         case KeyCodes::COAST_F24:
-            return 191 + (key - KeyCodes::COAST_F13);
+            return KEY_F24;
         case KeyCodes::COAST_PrintScreen:
-            return 107;
+            return KEY_PRINT;
         case KeyCodes::COAST_ScrollLock:
-            return 78;
+            return KEY_SCROLLLOCK;
         case KeyCodes::COAST_Pause:
-            return 127;
+            return KEY_PAUSE;
         case KeyCodes::COAST_Insert:
-            return 118;
+            return KEY_INSERT;
         case KeyCodes::COAST_Home:
-            return 110;
+            return KEY_HOME;
         case KeyCodes::COAST_PageUp:
-            return 112;
+            return KEY_PAGEUP;
         case KeyCodes::COAST_Delete:
-            return 119;
+            return KEY_DELETE;
         case KeyCodes::COAST_End:
-            return 115;
+            return KEY_END;
         case KeyCodes::COAST_PageDown:
-            return 117;
+            return KEY_PAGEDOWN;
         case KeyCodes::COAST_Right:
-            return 114;
+            return KEY_RIGHT;
         case KeyCodes::COAST_Left:
-            return 113;
+            return KEY_LEFT;
         case KeyCodes::COAST_Down:
-            return 116;
+            return KEY_DOWN;
         case KeyCodes::COAST_Up:
-            return 111;
-        case KeyCodes::KP_NumLock:
-            return 77;
-        case KeyCodes::KP_Divide:
-            return 106;
-        case KeyCodes::KP_Multiply:
-            return 63;
-        case KeyCodes::KP_Subtract:
-            return 82;
-        case KeyCodes::KP_Add:
-            return 86;
-        case KeyCodes::KP_Enter:
-            return 104;
-        case KeyCodes::KP_1:
-            return 87;
-        case KeyCodes::KP_2:
-            return 88;
-        case KeyCodes::KP_3:
-            return 89;
-        case KeyCodes::KP_4:
-            return 83;
-        case KeyCodes::KP_5:
-            return 84;
-        case KeyCodes::KP_6:
-            return 85;
-        case KeyCodes::KP_7:
-            return 79;
-        case KeyCodes::KP_8:
-            return 80;
-        case KeyCodes::KP_9:
-            return 81;
-        case KeyCodes::KP_0:
-            return 90;
-        case KeyCodes::KP_Point:
-            return 91;
+            return KEY_UP;
+        case KeyCodes::COAST_KP_NumLock:
+            return KEY_NUMLOCK;
+        case KeyCodes::COAST_KP_Divide:
+            return KEY_KPSLASH;
+        case KeyCodes::COAST_KP_Asterisk:
+            return KEY_KPASTERISK;
+        case KeyCodes::COAST_KP_Subtract:
+            return KEY_KPMINUS;
+        case KeyCodes::COAST_KP_Add:
+            return KEY_KPPLUS;
+        case KeyCodes::COAST_KP_Enter:
+            return KEY_KPENTER;
+        case KeyCodes::COAST_KP_1:
+            return KEY_KP1;
+        case KeyCodes::COAST_KP_2:
+            return KEY_KP2;
+        case KeyCodes::COAST_KP_3:
+            return KEY_KP3;
+        case KeyCodes::COAST_KP_4:
+            return KEY_KP4;
+        case KeyCodes::COAST_KP_5:
+            return KEY_KP5;
+        case KeyCodes::COAST_KP_6:
+            return KEY_KP6;
+        case KeyCodes::COAST_KP_7:
+            return KEY_KP7;
+        case KeyCodes::COAST_KP_8:
+            return KEY_KP8;
+        case KeyCodes::COAST_KP_9:
+            return KEY_KP9;
+        case KeyCodes::COAST_KP_0:
+            return KEY_KP0;
+        case KeyCodes::COAST_KP_Period:
+            return KEY_KPDOT;
         case KeyCodes::COAST_Help:
-            return 146;
+            return KEY_HELP;
         case KeyCodes::COAST_Menu:
-            return 135;
+            return KEY_MENU;
         case KeyCodes::COAST_LeftControl:
-            return 37;
+            return KEY_LEFTCTRL;
         case KeyCodes::COAST_LeftShift:
-            return 50;
+            return KEY_LEFTSHIFT;
         case KeyCodes::COAST_LeftAlt:
-            return 64;
+            return KEY_LEFTALT;
         case KeyCodes::COAST_LeftMeta:
-            return 133;
+            return KEY_LEFTMETA;
         case KeyCodes::COAST_RightControl:
-            return 105;
+            return KEY_RIGHTCTRL;
         case KeyCodes::COAST_RightShift:
-            return 62;
+            return KEY_RIGHTSHIFT;
         case KeyCodes::COAST_RightAlt:
-            return 108;
+            return KEY_RIGHTALT;
         case KeyCodes::COAST_RightMeta:
-            return 134;
+            return KEY_RIGHTMETA;
         default:
-            return 255;
+            return 0;
         }
     }
 
     KeyCodes ConvertToKeyCode(unsigned char key)
     {
         switch(key) {
-        case 9:
+        case KEY_ESC:
             return KeyCodes::COAST_Escape;
-        case 10:
+        case KEY_1:
             return KeyCodes::COAST_1;
-        case 11:
+        case KEY_2:
             return KeyCodes::COAST_2;
-        case 12:
+        case KEY_3:
             return KeyCodes::COAST_3;
-        case 13:
+        case KEY_4:
             return KeyCodes::COAST_4;
-        case 14:
+        case KEY_5:
             return KeyCodes::COAST_5;
-        case 15:
+        case KEY_6:
             return KeyCodes::COAST_6;
-        case 16:
+        case KEY_7:
             return KeyCodes::COAST_7;
-        case 17:
+        case KEY_8:
             return KeyCodes::COAST_8;
-        case 18:
+        case KEY_9:
             return KeyCodes::COAST_9;
-        case 19:
+        case KEY_0:
             return KeyCodes::COAST_0;
-        case 20:
+        case KEY_MINUS:
             return KeyCodes::COAST_Minus;
-        case 21:
+        case KEY_EQUAL:
             return KeyCodes::COAST_Equals;
-        case 22:
+        case KEY_BACKSPACE:
             return KeyCodes::COAST_Backspace;
-        case 23:
+        case KEY_TAB:
             return KeyCodes::COAST_Tab;
-        case 24:
+        case KEY_Q:
             return KeyCodes::COAST_Q;
-        case 25:
+        case KEY_W:
             return KeyCodes::COAST_W;
-        case 26:
+        case KEY_E:
             return KeyCodes::COAST_E;
-        case 27:
+        case KEY_R:
             return KeyCodes::COAST_R;
-        case 28:
+        case KEY_T:
             return KeyCodes::COAST_T;
-        case 29:
+        case KEY_Y:
             return KeyCodes::COAST_Y;
-        case 30:
+        case KEY_U:
             return KeyCodes::COAST_U;
-        case 31:
+        case KEY_I:
             return KeyCodes::COAST_I;
-        case 32:
+        case KEY_O:
             return KeyCodes::COAST_O;
-        case 33:
+        case KEY_P:
             return KeyCodes::COAST_P;
-        case 34:
+        case KEY_LEFTBRACE:
             return KeyCodes::COAST_LeftBracket;
-        case 35:
+        case KEY_RIGHTBRACE:
             return KeyCodes::COAST_RightBracket;
-        case 36:
+        case KEY_ENTER:
             return KeyCodes::COAST_Enter;
-        case 37:
+        case KEY_LEFTCTRL:
             return KeyCodes::COAST_LeftControl;
-        case 38:
+        case KEY_A:
             return KeyCodes::COAST_A;
-        case 39:
+        case KEY_S:
             return KeyCodes::COAST_S;
-        case 40:
+        case KEY_D:
             return KeyCodes::COAST_D;
-        case 41:
+        case KEY_F:
             return KeyCodes::COAST_F;
-        case 42:
+        case KEY_G:
             return KeyCodes::COAST_G;
-        case 43:
+        case KEY_H:
             return KeyCodes::COAST_H;
-        case 44:
+        case KEY_J:
             return KeyCodes::COAST_J;
-        case 45:
+        case KEY_K:
             return KeyCodes::COAST_K;
-        case 46:
+        case KEY_L:
             return KeyCodes::COAST_L;
-        case 47:
+        case KEY_SEMICOLON:
             return KeyCodes::COAST_Semicolon;
-        case 48:
-            return KeyCodes::COAST_Quote;
-        case 49:
+        case KEY_APOSTROPHE:
+            return KeyCodes::COAST_APOSTROPHE;
+        case KEY_GRAVE:
             return KeyCodes::COAST_Grave;
-        case 50:
+        case KEY_LEFTSHIFT:
             return KeyCodes::COAST_LeftShift;
-        case 51:
+        case KEY_BACKSLASH:
             return KeyCodes::COAST_Backslash;
-        case 52:
+        case KEY_Z:
             return KeyCodes::COAST_Z;
-        case 53:
+        case KEY_X:
             return KeyCodes::COAST_X;
-        case 54:
+        case KEY_C:
             return KeyCodes::COAST_C;
-        case 55:
+        case KEY_V:
             return KeyCodes::COAST_V;
-        case 56:
+        case KEY_B:
             return KeyCodes::COAST_B;
-        case 57:
+        case KEY_N:
             return KeyCodes::COAST_N;
-        case 58:
+        case KEY_M:
             return KeyCodes::COAST_M;
-        case 59:
+        case KEY_COMMA:
             return KeyCodes::COAST_Comma;
-        case 60:
+        case KEY_DOT:
             return KeyCodes::COAST_Period;
-        case 61:
+        case KEY_SLASH:
             return KeyCodes::COAST_Slash;
-        case 62:
+        case KEY_RIGHTSHIFT:
             return KeyCodes::COAST_RightShift;
-        case 63:
-            return KeyCodes::KP_Multiply;
-        case 64:
+        case KEY_KPASTERISK:
+            return KeyCodes::COAST_KP_Asterisk;
+        case KEY_LEFTALT:
             return KeyCodes::COAST_LeftAlt;
-        case 65:
+        case KEY_SPACE:
             return KeyCodes::COAST_Space;
-        case 66:
+        case KEY_CAPSLOCK:
             return KeyCodes::COAST_CapsLock;
-        case 67: // f1
-        case 68:
-        case 69:
-        case 70:
-        case 71:
-        case 72:
-        case 73:
-        case 74:
-        case 75:
-        case 76: // f10
-            return static_cast<KeyCodes>(KeyCodes::COAST_F1 + (key - 67));
-        case 77:
-            return KeyCodes::KP_NumLock;
-        case 78:
-            return KeyCodes::COAST_ScrollLock;
-        case 79:
-            return KeyCodes::KP_7;
-        case 80:
-            return KeyCodes::KP_8;
-        case 81:
-            return KeyCodes::KP_9;
-        case 82:
-            return KeyCodes::KP_Subtract;
-        case 83:
-            return KeyCodes::KP_4;
-        case 84:
-            return KeyCodes::KP_5;
-        case 85:
-            return KeyCodes::KP_6;
-        case 86:
-            return KeyCodes::KP_Add;
-        case 87:
-            return KeyCodes::KP_1;
-        case 88:
-            return KeyCodes::KP_2; 
-        case 89:
-            return KeyCodes::KP_3;
-        case 90:
-            return KeyCodes::KP_0;
-        case 91:
-            return KeyCodes::KP_Point;
-        case 94:
-            return KeyCodes::COAST_NonUSBackslash;
-        case 95:
+        case KEY_F1:
+            return KeyCodes::COAST_F1;
+        case KEY_F2:
+            return KeyCodes::COAST_F2;
+        case KEY_F3:
+            return KeyCodes::COAST_F3;
+        case KEY_F4:
+            return KeyCodes::COAST_F4;
+        case KEY_F5:
+            return KeyCodes::COAST_F5;
+        case KEY_F6:
+            return KeyCodes::COAST_F6;
+        case KEY_F7:
+            return KeyCodes::COAST_F7;
+        case KEY_F8:
+            return KeyCodes::COAST_F8;
+        case KEY_F9:
+            return KeyCodes::COAST_F9;
+        case KEY_F10:
+            return KeyCodes::COAST_F10;
+        case KEY_F11:
             return KeyCodes::COAST_F11;
-        case 96:
+        case KEY_F12:
             return KeyCodes::COAST_F12;
-        case 104:
-            return KeyCodes::KP_Enter;
-        case 105:
+        case KEY_F13:
+            return KeyCodes::COAST_F13;
+        case KEY_F14:
+            return KeyCodes::COAST_F14;
+        case KEY_F15:
+            return KeyCodes::COAST_F15;
+        case KEY_F16:
+            return KeyCodes::COAST_F16;
+        case KEY_F17:
+            return KeyCodes::COAST_F17;
+        case KEY_F18:
+            return KeyCodes::COAST_F18;
+        case KEY_F19:
+            return KeyCodes::COAST_F19;
+        case KEY_F20:
+            return KeyCodes::COAST_F20;
+        case KEY_F21:
+            return KeyCodes::COAST_F21;
+        case KEY_F22:
+            return KeyCodes::COAST_F22;
+        case KEY_F23:
+            return KeyCodes::COAST_F23;
+        case KEY_F24:
+            return KeyCodes::COAST_F24;
+        case KEY_NUMLOCK:
+            return KeyCodes::COAST_KP_NumLock;
+        case KEY_SCROLLLOCK:
+            return KeyCodes::COAST_ScrollLock;
+        case KEY_KP7:
+            return KeyCodes::COAST_KP_7;
+        case KEY_KP8:
+            return KeyCodes::COAST_KP_8;
+        case KEY_KP9:
+            return KeyCodes::COAST_KP_9;
+        case KEY_KPMINUS:
+            return KeyCodes::COAST_KP_Subtract;
+        case KEY_KP4:
+            return KeyCodes::COAST_KP_4;
+        case KEY_KP5:
+            return KeyCodes::COAST_KP_5;
+        case KEY_KP6:
+            return KeyCodes::COAST_KP_6;
+        case KEY_KPPLUS:
+            return KeyCodes::COAST_KP_Add;
+        case KEY_KP1:
+            return KeyCodes::COAST_KP_1;
+        case KEY_KP2:
+            return KeyCodes::COAST_KP_2; 
+        case KEY_KP3:
+            return KeyCodes::COAST_KP_3;
+        case KEY_KP0:
+            return KeyCodes::COAST_KP_0;
+        case KEY_KPDOT:
+            return KeyCodes::COAST_KP_Period;
+        case KEY_KPENTER:
+            return KeyCodes::COAST_KP_Enter;
+        case KEY_RIGHTCTRL:
             return KeyCodes::COAST_RightControl;
-        case 106:
-            return KeyCodes::KP_Divide;
-        case 107:
+        case KEY_KPSLASH:
+            return KeyCodes::COAST_KP_Divide;
+        case KEY_PRINT:
             return KeyCodes::COAST_PrintScreen;
-        case 108:
+        case KEY_RIGHTALT:
             return KeyCodes::COAST_RightAlt;
-        case 110:
+        case KEY_HOME:
             return KeyCodes::COAST_Home;
-        case 111:
+        case KEY_UP:
             return KeyCodes::COAST_Up;
-        case 112:
+        case KEY_PAGEUP:
             return KeyCodes::COAST_PageUp;
-        case 113:
+        case KEY_LEFT:
             return KeyCodes::COAST_Left;
-        case 114:
+        case KEY_RIGHT:
             return KeyCodes::COAST_Right;
-        case 115:
+        case KEY_END:
             return KeyCodes::COAST_End;
-        case 116:
+        case KEY_DOWN:
             return KeyCodes::COAST_Down;
-        case 117:
+        case KEY_PAGEDOWN:
             return KeyCodes::COAST_PageDown;
-        case 118:
+        case KEY_INSERT:
             return KeyCodes::COAST_Insert;
-        case 119:
+        case KEY_DELETE:
             return KeyCodes::COAST_Delete;
-        case 125:
-            return KeyCodes::KP_Equals;
-        case 127:
+        case KEY_KPEQUAL:
+            return KeyCodes::COAST_KP_Equals;
+        case KEY_PAUSE:
             return KeyCodes::COAST_Pause; 
-        case 133:
+        case KEY_LEFTMETA:
             return KeyCodes::COAST_LeftMeta;
-        case 134:
+        case KEY_RIGHTMETA:
             return KeyCodes::COAST_RightMeta;
-        case 135:
+        case KEY_MENU:
             return KeyCodes::COAST_Menu;
-            case 146:
+        case KEY_HELP:
             return KeyCodes::COAST_Help;
-        case 191://f13
-        case 192:
-        case 193:
-        case 194:
-        case 195:
-        case 196:
-        case 197:
-        case 198:
-        case 199:
-        case 200:
-        case 201:
-        case 202:
-            return static_cast<KeyCodes>(KeyCodes::COAST_F13 + (key - 191));
         default:
             return KeyCodes::INVALID;
         }
@@ -456,40 +594,57 @@ namespace Coast
     void SendInput(const KeyEvent& e)
     {
         auto mappedkey = ConvertToNative(e.Key);
-        if(mappedkey == 255)
-            return; // key doesnt exist 
+        if(mappedkey == KeyCodes::INVALID)
+            return;
+
+        EmitInput(InputFd, EV_KEY, mappedkey, e.Pressed ? 1 : 0);
+        EmitInput(InputFd, EV_SYN, SYN_REPORT, 0);
     }
 
     void SendInput(const MouseButtonEvent& e)
     {
         switch(e.Button) {
         case MouseButtons::LEFT:
+            EmitInput(InputFd, EV_KEY, BTN_LEFT, e.Pressed ? 1 : 0);
             break;
         case MouseButtons::MIDDLE:
+            EmitInput(InputFd, EV_KEY, BTN_MIDDLE, e.Pressed ? 1 : 0);
             break;
         case MouseButtons::RIGHT:
+            EmitInput(InputFd, EV_KEY, BTN_RIGHT, e.Pressed ? 1 : 0);
             break;
         default:
-            break;
+            return;
         }
+
+        EmitInput(InputFd, EV_SYN, SYN_REPORT, 0);
     }
 
     void SendInput(const MouseScrollEvent& e)
     {
-        if(e.Offset < 0) {
-            for(auto i = 0; i < abs(e.Offset) && i < 5; i++) { /// cap at 5
-            }
-        } else if(e.Offset > 0) {
-            for(auto i = 0; i < e.Offset && i < 5; i++) { /// cap at 5
-            }
-        }
+        EmitInput(InputFd, EV_REL, REL_HWHEEL, e.Offset);
+        EmitInput(InputFd, EV_SYN, SYN_REPORT, 0);
     }
 
     void SendInput(const MousePositionOffsetEvent& e)
     {
+        EmitInput(InputFd, EV_REL, REL_X, e.X);
+        EmitInput(InputFd, EV_REL, REL_Y, e.Y);
+        EmitInput(InputFd, EV_SYN, SYN_REPORT, 0);
     }
 
     void SendInput(const MousePositionAbsoluteEvent& e)
     {
+        static bool errMsgDelivered = false;
+        if(!errMsgDelivered)
+        {
+            fprintf(stderr, "Absolute position events not supported for Linux yet.\n");
+            errMsgDelivered = true;
+        }
+        return;
+
+        EmitInput(InputFd, EV_ABS, ABS_X, e.X);
+        EmitInput(InputFd, EV_ABS, ABS_Y, e.Y);
+        EmitInput(InputFd, EV_SYN, SYN_REPORT, 0);
     }
 }

@@ -4,6 +4,9 @@
 #include <windows.h>
 
 namespace Coast {
+    bool InitialiseInputSimulation() { return true; }
+    void ReleaseInputSimulation() {}
+
     DWORD ConvertToNative(KeyCodes key)
     {
         switch (key) {
@@ -59,7 +62,7 @@ namespace Coast {
         case KeyCodes::COAST_Minus:
             return VK_OEM_MINUS;
         case KeyCodes::COAST_Equals:
-            return VK_OEM_PLUS; // this is correct and not a mistype
+            return VK_OEM_PLUS;
         case KeyCodes::COAST_LeftBracket:
             return VK_OEM_4;
         case KeyCodes::COAST_RightBracket:
@@ -68,7 +71,7 @@ namespace Coast {
             return VK_OEM_5;
         case KeyCodes::COAST_Semicolon:
             return VK_OEM_1;
-        case KeyCodes::COAST_Quote:
+        case KeyCodes::COAST_APOSTROPHE:
             return VK_OEM_7;
         case KeyCodes::COAST_Grave:
             return VK_OEM_3;
@@ -132,31 +135,31 @@ namespace Coast {
             return VK_DOWN;
         case KeyCodes::COAST_Up:
             return VK_UP;
-        case KeyCodes::KP_NumLock:
+        case KeyCodes::COAST_KP_NumLock:
             return VK_NUMLOCK;
-        case KeyCodes::KP_Divide:
+        case KeyCodes::COAST_KP_Divide:
             return VK_DIVIDE;
-        case KeyCodes::KP_Multiply:
+        case KeyCodes::COAST_KP_Asterisk:
             return VK_MULTIPLY;
-        case KeyCodes::KP_Subtract:
+        case KeyCodes::COAST_KP_Subtract:
             return VK_SUBTRACT;
-        case KeyCodes::KP_Add:
+        case KeyCodes::COAST_KP_Add:
             return VK_ADD;
-        case KeyCodes::KP_Enter:
+        case KeyCodes::COAST_KP_Enter:
             return VK_RETURN;
-        case KeyCodes::KP_1:
-        case KeyCodes::KP_2:
-        case KeyCodes::KP_3:
-        case KeyCodes::KP_4:
-        case KeyCodes::KP_5:
-        case KeyCodes::KP_6:
-        case KeyCodes::KP_7:
-        case KeyCodes::KP_8:
-        case KeyCodes::KP_9:
-            return VK_NUMPAD1 + (key - KeyCodes::KP_1);
-        case KeyCodes::KP_0:
+        case KeyCodes::COAST_KP_1:
+        case KeyCodes::COAST_KP_2:
+        case KeyCodes::COAST_KP_3:
+        case KeyCodes::COAST_KP_4:
+        case KeyCodes::COAST_KP_5:
+        case KeyCodes::COAST_KP_6:
+        case KeyCodes::COAST_KP_7:
+        case KeyCodes::COAST_KP_8:
+        case KeyCodes::COAST_KP_9:
+            return VK_NUMPAD1 + (key - KeyCodes::COAST_KP_1);
+        case KeyCodes::COAST_KP_0:
             return VK_NUMPAD0;
-        case KeyCodes::KP_Point:
+        case KeyCodes::COAST_KP_Period:
             return VK_DECIMAL;
         case KeyCodes::COAST_Help:
             return VK_HELP;
@@ -248,7 +251,7 @@ namespace Coast {
         case VK_OEM_1:
             return KeyCodes::COAST_Semicolon;
         case VK_OEM_7:
-            return KeyCodes::COAST_Quote;
+            return KeyCodes::COAST_APOSTROPHE;
         case VK_OEM_3:
             return KeyCodes::COAST_Grave;
         case VK_OEM_COMMA:
@@ -312,15 +315,15 @@ namespace Coast {
         case VK_UP:
             return KeyCodes::COAST_Up;
         case VK_NUMLOCK:
-            return KeyCodes::KP_NumLock;
+            return KeyCodes::COAST_KP_NumLock;
         case VK_DIVIDE:
-            return KeyCodes::KP_Divide;
+            return KeyCodes::COAST_KP_Divide;
         case VK_MULTIPLY:
-            return KeyCodes::KP_Multiply;
+            return KeyCodes::COAST_KP_Asterisk;
         case VK_SUBTRACT:
-            return KeyCodes::KP_Subtract;
+            return KeyCodes::COAST_KP_Subtract;
         case VK_ADD:
-            return KeyCodes::KP_Add;
+            return KeyCodes::COAST_KP_Add;
         case VK_NUMPAD1:
         case VK_NUMPAD2:
         case VK_NUMPAD3:
@@ -330,11 +333,11 @@ namespace Coast {
         case VK_NUMPAD7:
         case VK_NUMPAD8:
         case VK_NUMPAD9:
-            return static_cast<KeyCodes>(KeyCodes::KP_1 + (key - VK_NUMPAD1));
+            return static_cast<KeyCodes>(KeyCodes::COAST_KP_1 + (key - VK_NUMPAD1));
         case VK_NUMPAD0:
-            return KeyCodes::KP_0;
+            return KeyCodes::COAST_KP_0;
         case VK_DECIMAL:
-            return KeyCodes::KP_Point;
+            return KeyCodes::COAST_KP_Period;
         case VK_HELP:
             return KeyCodes::COAST_Help;
         case VK_MENU:
@@ -364,8 +367,8 @@ namespace Coast {
         k.type = INPUT_KEYBOARD;
         k.ki.dwFlags = e.Pressed ? 0 : KEYEVENTF_KEYUP;
         k.ki.wVk = static_cast<WORD>(ConvertToNative(e.Key));
-        if (k.ki.wVk == 255) {
-            return; // no good!
+        if (k.ki.wVk == KeyCodes::INVALID) {
+            return;
         }
         SendInput(1, &k, sizeof(INPUT));
     }

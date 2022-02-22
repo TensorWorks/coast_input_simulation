@@ -7,6 +7,8 @@
 
 void keyboard_test()
 {
+    fprintf(stdout, "Starting Keyboard Test\n");
+
     Coast::SendInput(Coast::KeyEvent{true, Coast::KeyCodes::COAST_LeftMeta});
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
     Coast::SendInput(Coast::KeyEvent{false, Coast::KeyCodes::COAST_LeftMeta});
@@ -79,6 +81,8 @@ void keyboard_test()
 
 void mouse_test()
 {
+    fprintf(stdout, "Starting Mouse Absolute Position Test\n");
+
     Coast::SendInput(Coast::MousePositionAbsoluteEvent{50, 50});
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
@@ -103,6 +107,8 @@ void mouse_test()
     Coast::SendInput(Coast::MouseButtonEvent{false, Coast::MouseButtons::LEFT});
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
+    fprintf(stdout, "Starting Mouse Relative Position Test\n");
+
     Coast::SendInput(Coast::MouseButtonEvent{true, Coast::MouseButtons::LEFT});
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
@@ -121,8 +127,12 @@ void mouse_test()
 
 int main(int argc, char* argv[]) {
 
+    if(!Coast::InitialiseInputSimulation())
+        fprintf(stderr, "Test failed: Failed to initialise input simulation");
+
     keyboard_test();
     mouse_test();
+    Coast::ReleaseInputSimulation();
 
     return 0;
 }
