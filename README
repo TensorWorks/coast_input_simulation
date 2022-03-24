@@ -1,9 +1,16 @@
 ### Coast Input Simulation
 
-## Dependencies
+Library for simulating input on Windows and Linux. Uses `SendInput` Windows API on Windows, and creates and sends input via a virtual `uinput` device on Linux to achieve these ends.
+
+## Prerequisites
 Linux
-- X11
-- Xtst
+ - Set up permissions required for interacting with `uinput` by running the `give_user_uinput_permissions.sh` and then reboot
 
 ## Build
 - Import into a `gn` based project and add as a dependency to one of your project's `BUILD.gn` files
+OR
+- Run `build.sh`
+
+## Licensing
+`coast_input_simulation` is provided under the MIT license, which can be referred to in the `LICENSE` file in this repository.
+This project also contains code derived from the Input_lite project, please also refer to the license file at this project's repository here (https://github.com/smasherprog/input_lite) 
