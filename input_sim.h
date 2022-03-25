@@ -1,4 +1,5 @@
 #pragma once
+#include "input_sim_macros.h"
 
 namespace Coast {
     enum KeyCodes : unsigned int {
@@ -150,11 +151,11 @@ namespace Coast {
         int Y = 0;
     };
 
-    bool InitialiseInputSimulation();
-    void ReleaseInputSimulation();
-    void SendInput(const KeyEvent &e);
-    void SendInput(const MouseButtonEvent &e);
-    void SendInput(const MouseScrollEvent &e);
-    void SendInput(const MousePositionOffsetEvent &e);
-    void SendInput(const MousePositionAbsoluteEvent &e);
+    bool SYMBOL_EXPORT InitialiseInputSimulation();
+    void SYMBOL_EXPORT ReleaseInputSimulation();
+    void SYMBOL_EXPORT SendInput(const KeyEvent &e);
+    void SYMBOL_EXPORT SendInput(const MouseButtonEvent &e);
+    void SYMBOL_EXPORT SendInput(const MouseScrollEvent &e);
+    void SYMBOL_EXPORT SendInput(const MousePositionOffsetEvent &e);
+    void SYMBOL_EXPORT SendInput(const MousePositionAbsoluteEvent &e);
 }
