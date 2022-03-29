@@ -1,22 +1,19 @@
 #!/usr/bin/env bash
 
+INSTALL_PREFIX=$(realpath $1)
+[ -z $INSTALL_PREFIX ] && INSTALL_PREFIX="$SCRIPT_DIR/dist"
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-which g++ && CXX_COMPILER=g++
-[ -z "$CXX_COMPILER" ] && which clang++ && CXX_COMPILER=clang++
+[ -d "$SCRIPT_DIR/build" ] || mkdir "$SCRIPT_DIR/build"
 
-which ld && LINKER=ld
-[ -z "$LINKER" ] && which ldd && CXX_COMPILER=ldd
+pushd "$SCRIPT_DIR/build"
+    echo "Generating Cmake files"
+    cmake ../
 
-[ -d "$SCRIPT_DIR/out/build" ] || mkdir -p "$SCRIPT_DIR/out/build"
+    echo "Building library and tests"
+    cmake --build .
 
-
-BUILD_DIR="$SCRIPT_DIR/out/build"
-OUT_DIR="$SCRIPT_DIR/out"
-OUT_NAME="coast_input_simulation"
-
-
-
-$CXX_COMPILER -c -I"$SCRIPT_DIR" -o $BUILD_DIR/$OUT_NAME.o "$SCRIPT_DIR/linux/input_sim_linux.cc"
-ar rvs $OUT_DIR/lib$OUT_NAME.a $BUILD_DIR/$OUT_NAME.o
-$CXX_COMPILER -o $SCRIPT_DIR/out/$OUT_NAME "input_sim_test.cc" -Wl,-Bstatic,-L$OUT_DIR,-l$OUT_NAME,-Bdynamic,-lX11
+    echo "Installing redistribable files"
+    cmake --install . --prefix $INSTALL_PREFIX
+popd
