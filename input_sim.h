@@ -151,11 +151,11 @@ namespace Coast {
         int Y = 0;
     };
 
-    bool SYMBOL_EXPORT InitialiseInputSimulation();
-    void SYMBOL_EXPORT ReleaseInputSimulation();
-    void SYMBOL_EXPORT SendInput(const KeyEvent &e);
-    void SYMBOL_EXPORT SendInput(const MouseButtonEvent &e);
-    void SYMBOL_EXPORT SendInput(const MouseScrollEvent &e);
-    void SYMBOL_EXPORT SendInput(const MousePositionOffsetEvent &e);
-    void SYMBOL_EXPORT SendInput(const MousePositionAbsoluteEvent &e);
+    COAST_IS_API bool InitialiseInputSimulation();
+    COAST_IS_API void ReleaseInputSimulation();
+    COAST_IS_API void SendInput(const KeyEvent &e);
+    COAST_IS_API void SendInput(const MouseButtonEvent &e);
+    COAST_IS_API void SendInput(const MouseScrollEvent &e);
+    COAST_IS_API void SendInput(const MousePositionOffsetEvent &e);
+    COAST_IS_API void SendInput(const MousePositionAbsoluteEvent &e);
 }

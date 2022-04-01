@@ -1,11 +1,11 @@
 #pragma once
 
-#ifdef _WIN32
-    #ifdef EXPORT_SYMBOLS
-        #define SYMBOL_EXPORT __declspec(dllexport)
+#if defined(_WIN32) && defined(COAST_IS_SHARED)
+    #ifdef EXPORT_COAST_IS_SYMBOLS
+        #define COAST_IS_API __declspec(dllexport)
     #else
-        #define SYMBOL_EXPORT __declspec(dllimport)
+        #define COAST_IS_API __declspec(dllimport)
     #endif
 #else
-    #define SYMBOL_EXPORT
+    #define COAST_IS_API
 #endif

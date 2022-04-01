@@ -13,6 +13,8 @@ endif()
 
 add_library(coast_input_simulation STATIC ${cis_sources})
 
+target_compile_definitions(coast_input_simulation PRIVATE EXPORT_SYMBOLS)
+
 target_include_directories(coast_input_simulation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(coast_input_sim_test PRIVATE coast_input_simulation)
 
